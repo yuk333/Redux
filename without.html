@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .component {
+            border: 5px solid black;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="red"></div>
+    <div id="green"></div>
+    <script>
+        function red(){
+            document.querySelector('#red').innerHTML = `
+            <div class="component">
+            <h1>red</h1>
+            <button onClick="document.querySelecorr('#red').style.background='red'">배경색 red</button>
+            </div>
+            `;
+        }
+        red();
+        function green(){
+            document.querySelector('#green').innerHTML = `
+            <div class="component">
+            <h1>green</h1>
+            <button onClick="document.querySelecorr('#green').style.background='green'">배경색 green</button>
+            </div>
+            `;
+        }
+        green();
+    </script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/5.0.0-alpha.0/redux.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="subject"></div>
+    <div id="toc"></div>
+    <div id="control"></div>
+    <div id="content"></div>
+    <script>
+         //스토어 생성하기
+        let store = Redux.createStore(reducer,window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+        function subject(){
+            document.querySelector('#subject').innerHTML = `
+                <header>
+                        <h1>WEB</h1>
+                        hello web!!
+                </header>
+            `;
+        }
+        function TOC(){
+            let liTags = '';
+            let state = store.getState();
+            state.contents.map((con)=>{
+                liTags = liTags + `
+                    <li>
+                        <a onclick="
+                        event.preventDefault();
+                        let action = {type:'SELECT', id:${con.id}, mode:'read'}
+                        store.dispatch(action);
+                        " 
+                        href="${con.id}">${con.title}</a>
+                    </li>
+                `
+            })
+            document.querySelector('#toc').innerHTML = `
+                <nav>
+                    <ul>
+                        ${liTags}
+                    </ul>
+                </nav>
+            `;
+        }
+        function control(){
+            document.querySelector('#control').innerHTML = `
+                <ul>
+                    <li><a onclick="
+                        event.preventDefault();
+                        store.dispatch({
+                            type:'CHANGE_MODE',
+                            mode: 'create'
+                        })
+                        " 
+                        href="#">create</a></li>
+                    <li><button>delete</button></li>
+                </ul>
+            `;
+        }
+        function article() {
+            let state = store.getState();
+            if(state.mode === 'welcome'){
+                document.querySelector('#content').innerHTML = `
+                <article>
+                    <h2>welcome</h2>
+                    안녕하세요. 
+                    반갑습니다.
+                </article>
+            `;
+            }else if(state.mode === 'read'){
+                let content = state.contents.find((con)=>con.id === state.selected_id)
+                document.querySelector('#content').innerHTML = `
+                <article>
+                    <h2>${content.title}</h2>
+                    ${content.innerHTML}
+                </article>`;
+            }else if(state.mode === 'create'){
+                document.querySelector('#content').innerHTML = `
+                <article>
+                    <form onsubmit="
+                        event.preventDefault();
+                        let title = this.title.value;
+                        let desc = this.desc.value;
+                        store.dispatch({
+                            type:'CREATE',
+                            title:title,
+                            desc: desc
+                        })
+                    ">
+                        <p><input type="text" name="title" placeholder="제목"></p>
+                        <p><textarea name="desc" placeholder="내용"></textarea></p>
+                        <p><input type="submit" value="등록"></p>
+                    </form>
+                </article>
+                `;
+            }
+            
+        }
+        subject();
+        TOC();
+        control();
+        article();
+
+       
+        //reducer함수 생성하기
+        function reducer(state,action){
+            //state초깃값설정
+            if(state === undefined){
+                return {
+                    mode: 'create',
+                    selected_id: 1,
+                    maxId : 2,
+                    contents: [
+                        { id: 1, title: 'javascript', innerHTML : 'javascript는 재미있다.'},
+                        { id: 2, title: 'react', innerHTML : 'react는 좋은데 싫어요'},
+                    ]
+                }
+            }
+            let newState;
+            //action의 type값이 SELECT일때 실행되는 구문
+            if(action.type === 'SELECT'){
+                newState = Object.assign({}, state, { selected_id: action.id, mode: action.mode });
+            }else if(action.type === 'CREATE'){
+                let newMaxId = state.maxId + 1;
+                //state가 가지고 있는 contents배열을 복사하여 새배열(newContents)을 생성
+                let newContents = state.contents.concat();
+                //newContents배열에 마지막 값으로 삽입
+                newContents.push({id: newMaxId, title: action.title, innerHTML: action.desc});
+                newState =  Object.assign({}, state, {
+                    mode:'read',
+                    maxId: newMaxId,
+                    contents: newContents
+                });
+            }else if(action.type === 'CHANGE_MODE'){
+                newState = Object.assign({},state,{ mode: action.mode });
+            }
+            console.log(state,action,newState);
+            return newState;
+        }
+        store.subscribe(article);
+        store.subscribe(TOC);
+    </script>
+</body>
+</html>

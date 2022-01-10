@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/5.0.0-alpha.0/redux.min.js"></script>
+    <title>Document</title>
+    <style>
+        .component{
+            border: 5px solid black;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="red"></div>
+    <div id="green"></div>
+    <script>
+        //reducer함수
+        function reducer(state,action){
+            console.log(state,action);  
+            //state가 할당되지 않았을때 최초로 호출 => state초깃값 설정
+            if(state === undefined){
+                return {color:'yellow'};
+            }
+            let newState;
+            if(action.type === 'CHANGE_COLOR'){
+                newState = Object.assign({},state,{color:action.color});
+                //newState = {...state,{color:'red'}}
+            }
+            return newState;
+        }
+        //스토어 만들기
+        let store = Redux.createStore(reducer);
+        function red(){
+            //state값을 반환
+            let state = store.getState();
+            //dispatch(action)는 reducer를 실행시킴!!!
+            //* action 객체형태 type키 필수!!!
+            document.querySelector('#red').innerHTML = `
+            <div class="component" style="background:${state.color}">
+                <h1>red</h1>
+                <button onclick="
+                    store.dispatch({type:'CHANGE_COLOR',color:'red'})
+                ">배경색 red</button>
+            </div>
+            `;
+        }
+        store.subscribe(red);
+        red();
+        function green(){
+            let state = store.getState();
+            document.querySelector('#green').innerHTML = `
+            <div class="component" style="background:${state.color}">
+                <h1>green</h1>
+                <button onclick="
+                    store.dispatch({type:'CHANGE_COLOR',color:'green'})
+                ">배경색 green</button>
+            </div>
+            `;
+        }
+        green();
+        store.subscribe(green);
+    </script>
+</body>
+</html>
