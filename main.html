@@ -24,9 +24,19 @@
             `;
         }
         function TOC(){
+            //밑에 li에 들어갈 내용인 liTags 먼저 빈 문자열을 준다.
             let liTags = '';
+            //state 실행
             let state = store.getState();
+            //state에서 content를 새롭게 다시 배열 content를 '`...`'들로 바꾼다.
             state.contents.map((con)=>{
+                // 클릭해도 넘어가지 못하도록 event.preventDefault()를 사용
+                // store저장소로 action을 통해 보낸다. 
+                //actuin 객체형태 type키 필수
+                //dispatch(action)는 reducer를 실행시킴
+                //onclick을 통해 위에것들을 할 수 있도록한다.
+                //content의 id를 클릭할 수 있게 한다.
+                //li에는 content의 title이 있다.
                 liTags = liTags + `
                     <li>
                         <a onclick="
@@ -38,6 +48,7 @@
                     </li>
                 `
             })
+            //li에 위에 하던 '`...`'들이 liTags에 들어간다.
             document.querySelector('#toc').innerHTML = `
             <nav>
                 <ul>
@@ -46,6 +57,8 @@
             </nav>
             `;
         }
+        //dispatch(action)에서 action생략?
+        //type에는 대문자, mode에는 소문자사용
         function control(){
             document.querySelector('#control').innerHTML = `
             <ul>
@@ -65,6 +78,8 @@
             </ul>
             `;
         }
+        //state실행
+        //state가 welcome모드면 이 article안에 있는 내용을 보여라.
         function article(){
             let state = store.getState();
             if(state.mode === 'welcome'){
@@ -76,6 +91,9 @@
             </article>
             `;
             }
+            //state가 read모드일때
+            //content는 content에서의 id가 state에서 selected_id와 같은 것을 정렬한다.
+            //article안에 정렬된 content에서의 title과 innerHTML이 보이게 된다.
             else if(state.mode === 'read'){
                 let content = state.contents.find((con)=>con.id === state.selected_id);
                 document.querySelector('#content').innerHTML = `
@@ -84,6 +102,8 @@
                         ${content.innerHTML}
                 </article>
             `;
+            //state의 mode가 create일때
+            //
             }else if(state.mode === 'create'){
                 document.querySelector('#content').innerHTML = `
                 <article>

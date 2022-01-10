@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/5.0.0-alpha.0/redux.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="a"></div>
+    <div id="b"></div>
+    <div id="c"></div>
+    <div id="d"></div>
+    <script>
+        let store = Redux.createStore(reducer,window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+        function a(){
+            document.querySelector('#a').innerHTML = `
+            <h1>welcome</h1>
+            hi!!!
+            `;
+        }
+        function b(){
+            let liTags = '';
+            state = store.getState();
+            document.querySelector('#b').innerHTML = `
+            <ul>
+                <li><a href="#">javascript</a></li>
+                <li><a href="#">react</a></li>
+            </ul>
+            `;
+        }
+        function c(){
+            document.querySelector('#c').innerHTML = `
+            <ul>
+                <li><a href="#">create</a></li>
+                <li><button>delete</button></li>
+            </ul>
+            `;
+        }
+        function d(){
+            document.querySelector('#d').innerHTML = `
+            <h2>welcome</h2>
+            안녕하세요. 반갑습니다.
+            `;
+        }
+        a();
+        b()
+        c();
+        d();
+
+        function reducer(state,action){
+            if(state === undefined){
+                return{
+                    mode:'welcome',
+                    contents: [
+                        {id:1,title:javascript,innerHTML:"어렵다."},
+                        {id:2,title:react,innerHTML:"이것도 어렵다."}
+                    ]
+                }
+            }
+        }
+    </script>
+</body>
+</html>
